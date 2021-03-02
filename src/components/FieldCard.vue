@@ -1,21 +1,21 @@
 <template>
     <div class="field-card" @mouseenter="enter(index)" @mouseleave="leave" >
-        <div v-if="addInput === index"> 
+        <div v-if="editLabel"> 
             <input class="form-control input-value" type="text" v-model.trim="message" v-focus 
             @focusout="clickOutsideEdit(message, index)" >
         </div>
         <div class="label_field" v-else> 
             {{ field.field_name }}
         </div>
-        <button type="button" class="btn btn-secondary edit-button" :style="{visibility: displayIconEdit ? 'visible' : 'hidden'}" 
-        v-on:click="addInputElement(index)">edit</button>
+        <button type="button" class="btn btn-secondary edit-button" 
+            :style="{visibility: displayIcon ? 'visible' : 'hidden'}" 
+            v-on:click="editLabelEvent(index)">edit</button>
         
-
-        <div v-if="addInputValue === index"> 
+        <div v-if="editValue"> 
             <input class="form-control input-value" type="number" v-model.trim="message_value" v-focus 
             @focusout="clickOutsideEditValue(message_value, index)" >
         </div>
-        <div v-else v-on:click="editFieldValue(index)"> 
+        <div v-else v-on:click="editValueEvent(index)"> 
             <input class="form-control input-value" v-model="roundAmountField">
         </div>  
 
@@ -28,20 +28,21 @@
 
 interface FieldCard {
     displayIcon: boolean,
-    displayIconEdit: boolean,
+    editLabel: boolean,
+    editValue: boolean,
     message: string,
-    message_value: string
+    message_value: string,
   }
 
 export default {
     name: 'FieldCard',
     
-    props:['index', 'field', 'deleteField', 'addInputElement', 'addInput', 'clickOutsideEdit', 'editFieldValue', 
-    'addInputValue', 'clickOutsideEditValue'],
+    props:['index', 'field', 'deleteField'],
     data(): FieldCard {
       return {
         displayIcon: false,
-        displayIconEdit: false,
+        editLabel: false,
+        editValue: false,
         message: this.field.field_name,
         message_value: this.field.amount,
       }
@@ -57,13 +58,32 @@ export default {
     methods: {
         enter: function(index: number) {
             if(index !== 0){
-                this.displayIconEdit = true
                 this.displayIcon = true
             } 
         },
         leave: function() {
             this.displayIcon = false
-            this.displayIconEdit = false
+        },
+        editLabelEvent: function() {
+            this.editLabel = true
+        },
+        editValueEvent: function() {
+            this.editValue = true
+        },
+        clickOutsideEdit: function(value: string) {
+            if(value.length > 1) {
+                this.field.field_name = value
+            }
+            this.editLabel = false
+        },
+        clickOutsideEditValue: function(value: string) {
+            if(value.length <= 0) {
+                this.field.amount = 0.0
+            } 
+            else if (value !== this.field.amount){
+                this.field.amount = parseFloat(value)
+            }
+            this.editValue = false
         }
     }
 }
