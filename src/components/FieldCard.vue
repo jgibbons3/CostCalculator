@@ -1,26 +1,25 @@
 <template>
     <div class="field-card" @mouseenter="enter(index)" @mouseleave="leave" >
         <div v-if="editLabel"> 
-            <input class="form-control input-value" type="text" v-model.trim="message" v-focus 
-            @focusout="clickOutsideEdit(message, index)" >
+            <input class="form-control input-value" type="text" v-model.trim="label" v-focus 
+            @focusout="clickOutsideEditLabel()" >
         </div>
         <div class="label_field" v-else> 
             {{ field.field_name }}
         </div>
         <button type="button" class="btn btn-secondary edit-button" 
             :style="{visibility: displayIcon ? 'visible' : 'hidden'}" 
-            v-on:click="editLabelEvent(index)">edit</button>
+            v-on:click="editLabelEvent()">edit</button>
         
-        <div v-if="editValue"> 
-            <input class="form-control input-value" type="number" v-model.trim="message_value" v-focus 
-            @focusout="clickOutsideEditValue(message_value, index)" >
+        <div> 
+            <input class="form-control input-value" type="number" v-model="roundAmountField"
+            v-on:click="editValueEvent()"
+            @focusout="clickOutsideEditValue()">
         </div>
-        <div v-else v-on:click="editValueEvent(index)"> 
-            <input class="form-control input-value" v-model="roundAmountField">
-        </div>  
 
-        <button type="button" class="btn btn-secondary delete-button" :style="{visibility: displayIcon ? 'visible' : 'hidden'}"
-        v-on:click="deleteField(index)">X</button>
+        <button type="button" class="btn btn-secondary delete-button" 
+            :style="{visibility: displayIcon ? 'visible' : 'hidden'}"
+            v-on:click="deleteField(index)">X</button>
     </div>
 </template>
 
@@ -30,8 +29,7 @@ interface FieldCard {
     displayIcon: boolean,
     editLabel: boolean,
     editValue: boolean,
-    message: string,
-    message_value: string,
+    label: string,
   }
 
 export default {
@@ -43,16 +41,27 @@ export default {
         displayIcon: false,
         editLabel: false,
         editValue: false,
-        message: this.field.field_name,
-        message_value: this.field.amount,
+        label: this.field.field_name,
       }
     },
     computed: {
-      roundAmountField() {
-        if(this.$props.field.amount % 1 === 0){
-            return this.$props.field.amount.toFixed(1);
-        }
-        return this.$props.field.amount.toFixed(2);
+      roundAmountField: {
+        get() {
+            if (this.editValue) {
+                return this.field.amount
+            }
+            if (this.field.amount % 1 === 0){
+                return this.field.amount.toFixed(1);
+            }
+            return this.field.amount.toFixed(2);
+        },
+        set(value) {
+            let v = parseFloat(value)
+            if (isNaN(v)) {
+                v = 0.0
+            }
+            this.field.amount = v
+        } 
       }
     },
     methods: {
@@ -70,19 +79,13 @@ export default {
         editValueEvent: function() {
             this.editValue = true
         },
-        clickOutsideEdit: function(value: string) {
-            if(value.length > 1) {
-                this.field.field_name = value
+        clickOutsideEditLabel: function() {
+            if (this.label.length > 1) {
+                this.field.field_name = this.label
             }
             this.editLabel = false
         },
-        clickOutsideEditValue: function(value: string) {
-            if(value.length <= 0) {
-                this.field.amount = 0.0
-            } 
-            else if (value !== this.field.amount){
-                this.field.amount = parseFloat(value)
-            }
+        clickOutsideEditValue: function() {
             this.editValue = false
         }
     }

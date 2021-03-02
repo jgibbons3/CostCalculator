@@ -36,6 +36,7 @@ export default {
   },
   computed: {
     totalRequest() {
+      console.log(this.fields)
       return (this.fields.reduce((acc:number, item: IField) => acc + item.amount, 0)).toFixed(2);
     }
   },
