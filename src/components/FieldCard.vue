@@ -1,8 +1,8 @@
 <template>
-    <div class="field-card" @mouseenter="enter(index)" @mouseleave="leave" >
+    <div class="field-card" v-on:mouseenter="enter(index)" v-on:mouseleave="leave" >
         <div v-if="editLabel"> 
             <input class="form-control input-value" type="text" v-model.trim="label" v-focus 
-            @focusout="clickOutsideEditLabel()" >
+            v-on:focusout="clickOutsideEditLabel()" >
         </div>
         <div class="label_field" v-else> 
             {{ field.field_name }}
@@ -15,7 +15,7 @@
         <div> 
             <input class="form-control input-value" type="number" v-model="roundAmountField"
             v-on:click="editValueEvent()"
-            @focusout="clickOutsideEditValue()">
+            v-on:focusout="clickOutsideEditValue()">
         </div>
 
         <button type="button" class="btn btn-secondary delete-button" 

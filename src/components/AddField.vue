@@ -1,6 +1,6 @@
 <template>
     <div class="form-main-content">
-    <form class="form-content" type="submit" @focusout="add()">
+    <form class="form-content" type="submit" v-on:focusout="add()">
         <div class="row">
             <div class="col">
                 <input class="form-control add-input" id="new_field_label" type="text" v-model.trim="newLabel" placeholder="Label">
