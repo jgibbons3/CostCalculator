@@ -14,15 +14,13 @@
 </template>
 
 <script lang="ts">
-
-interface NewValues {
-  newLabel: string,
-  newValue: string
-}
+import { NewValues } from "../model"
 
 export default {
     name: 'AddField',
-    props:['addNewField'],
+    props: {
+        addNewField: Function 
+    },
     data(): NewValues {
       return {
         newLabel: "",
@@ -34,7 +32,7 @@ export default {
             if(!this.newLabel || !this.newValue) {
                 return
             }
-            this.$props.addNewField(this.newLabel, this.newValue)
+            this.addNewField(this.newLabel, this.newValue)
             this.newLabel = ""
             this.newValue = ""
         }

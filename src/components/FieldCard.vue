@@ -7,6 +7,7 @@
         <div class="label_field" v-else> 
             {{ field.field_name }}
         </div>
+        
         <button type="button" class="btn btn-secondary edit-button" 
             :style="{visibility: displayIcon ? 'visible' : 'hidden'}" 
             v-on:click="editLabelEvent()">edit</button>
@@ -24,18 +25,17 @@
 </template>
 
 <script lang="ts">
-
-interface FieldCard {
-    displayIcon: boolean,
-    editLabel: boolean,
-    editValue: boolean,
-    label: string,
-  }
+import { PropType } from 'vue';
+import { IField, FieldCard } from "../model"
 
 export default {
     name: 'FieldCard',
     
-    props:['index', 'field', 'deleteField'],
+    props: {
+        index: Number, 
+        field: Object as PropType<IField>, 
+        deleteField: Function
+    },
     data(): FieldCard {
       return {
         displayIcon: false,
@@ -46,7 +46,7 @@ export default {
     },
     computed: {
       roundAmountField: {
-        get() {
+        get(): number {
             if (this.editValue) {
                 return this.field.amount
             }
@@ -55,7 +55,7 @@ export default {
             }
             return this.field.amount.toFixed(2);
         },
-        set(value) {
+        set(value: string) {
             let v = parseFloat(value)
             if (isNaN(v)) {
                 v = 0.0

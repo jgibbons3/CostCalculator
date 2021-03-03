@@ -1,6 +1,6 @@
 <template>
   <h2 class="app-title">Price Components</h2>
-  <h5 class="total-wrapper"> Total:  {{ totalRequest }} EUR/KG</h5>
+  <h5 class="total-wrapper"> Total:  {{ totalValue }} EUR/KG</h5>
   <Fields :fields=fields />
   <AddField :addNewField="addNewField" />
 </template>
@@ -8,15 +8,7 @@
 <script lang="ts">
 import Fields from './components/Fields.vue'
 import AddField from './components/AddField.vue'
-
-interface IField {
-  field_name: string
-  amount: number
-}
-
-interface IFields {
-  fields: IField[]
-}
+import { IFields, IField } from "./model"
 
 export default {
   name: 'App',
@@ -35,8 +27,7 @@ export default {
     }
   },
   computed: {
-    totalRequest() {
-      console.log(this.fields)
+    totalValue: function() {
       return (this.fields.reduce((acc:number, item: IField) => acc + item.amount, 0)).toFixed(2);
     }
   },
